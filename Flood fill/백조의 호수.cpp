@@ -9,15 +9,14 @@ int arr[1500][1500] = { 0 };  // 0: 물, 1:백조, -1 : 얼음
 int visited[1500][1500] = { 0 };
 int r, c;
 
-//vector<pair<pair<int, int>, bool>> ice; //얼음 위치
+vector<pair<pair<int, int>, bool>> ice; //얼음 위치
 queue<pair<int, int>> swanQ, tempswanQ; //백조 위치
-queue<pair<int, int>> waterQ, tempwaterQ;
 
 int dx[] = { 0, 1, 0, -1 };
 int dy[] = { -1, 0, 1, 0 };
 
 bool meet = 0;
-/*
+
 void melting() {
 	vector<pair<int,int>> temp;
 	for (int i = 0; i < ice.size(); i++) {
@@ -37,25 +36,7 @@ void melting() {
 		arr[temp[i].first][temp[i].second] = 0;
 	}
 }
-*/
 
-void melting() {
-	while (!waterQ.empty()) {
-		int tempX = waterQ.front().first;
-		int tempY = waterQ.front().second;
-		waterQ.pop();
-		for (int i = 0; i < 4; i++) {
-			int nx = tempX + dx[i];
-			int ny = tempY + dy[i];
-			if (nx >= 0 && nx < r && ny >= 0 && ny < c) {
-				if (arr[nx][ny] == -1) {
-					arr[nx][ny] = 0;
-					tempwaterQ.push({ nx,ny });
-				}
-			}
-		}
-	}
-}
 
 void meetSwan() {
 	while (!swanQ.empty()) {
@@ -85,19 +66,16 @@ void meetSwan() {
 void solve() {
 	int count = 0;
 	while (meet == 0) {
-		meetSwan();
 		if (meet == 1)
 			break;
-		melting();
-		queue<pair<int, int>> empty1;
-		queue<pair<int, int>> empty2;
-		swanQ = tempswanQ;
-		waterQ = tempwaterQ;
-		swap(tempswanQ, empty1);
-		swap(tempwaterQ, empty2);
 		count++;
+		queue<pair<int, int>> empty;
+		swap(tempswanQ, empty);
+		meetSwan();
+		melting();
+		swanQ = tempswanQ;
 	}
-	cout << count;
+	cout << count - 1;
 }
 
 int main() {
@@ -112,15 +90,13 @@ int main() {
 		string temp;
 		cin >> temp;
 		for (int j = 0; j < c; j++) {
-			if (temp[j] == '.') { //물
+			if (temp[j] == '.')
 				arr[i][j] = 0;
-				waterQ.push({ i,j });
-			}
-			else if (temp[j] == 'X') { //얼음
+			else if (temp[j] == 'X') {
 				arr[i][j] = -1;
-				//ice.push_back(make_pair(make_pair(i, j), false));
+				ice.push_back(make_pair(make_pair(i, j), false));
 			}
-			else { //백조
+			else {
 				arr[i][j] = 1;
 				if (swanQ.size() == 0) {
 					swanQ.push({ i,j });
