@@ -20,7 +20,7 @@ void bfs(int startX, int startY) {
 	answer++;
 	count++;
 	ans[count]++;
-	struct Node queue[600] = { 0, };
+	struct Node queue[1000] = { 0, };
 	visited[startX][startY] = 1;
 	int front = 0, rear = 0, popX, popY;
 	queue[0].x = startX;
@@ -72,7 +72,7 @@ int main() {
 	}
 	printf("%d\n", answer);
 	for (int i = 1; i <= answer; i++) {
-		printf("%d %d\n",i,  ans[i]);
+		printf("%d\n", ans[i]);
 	}
 	return 0;
 }
