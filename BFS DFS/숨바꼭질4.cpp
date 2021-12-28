@@ -1,130 +1,58 @@
 #include <iostream>
 #include <queue>
-#include <algorithm>
+#include <vector>
 
 using namespace std;
 
 int visited[100001];
+int path[100001];
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
-	cout.tie(0);
 	int n, k;
-	int minnum = 987654321;
-	queue<pair<int, int>> q;
-	vector<int> answer;
 	cin >> n >> k;
-	q.push(make_pair(n, 0));
-
-
+	queue<pair<int,int>> q;
+	vector<int> ans;
+	q.push({ n,0 });
+	visited[n] = 1;
+	
 	while (!q.empty()) {
 		int x = q.front().first;
 		int cnt = q.front().second;
-		visited[x] = 1;
 		q.pop();
 
-
-		if (x == k && minnum > cnt) {
-			minnum = cnt;
-			answer = temp;
-			continue;
+		if (x == k) {
+			cout << cnt << "\n";
+			int idx = x;
+			while (idx != n) {
+				ans.push_back(idx);
+				idx = path[idx];
+			}
+			ans.push_back(n);
+			break;
 		}
 
-		if (cnt > minnum)
-			continue;
+		if (x - 1 >= 0 && visited[x - 1] == 0) {
+			q.push({ x - 1,cnt + 1 });
+			path[x - 1] = x;
+			visited[x - 1] = 1;
+		}
 
-		if (x + 1 <= 100000 && visited[x + 1] != 1) {
-			temp.push_back(x + 1);
-			q.push({ { x + 1, cnt + 1 }, temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
+		if (x + 1 <= 100000 && visited[x + 1] == 0) {
+			q.push({ x + 1, cnt + 1 });
+			path[x + 1] = x;
+			visited[x + 1] = 1;
 		}
-		if (x - 1 >= 0 && visited[x - 1] != 1) {
-			temp.push_back(x - 1);
-			q.push({ { x - 1,cnt + 1 }, temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
+
+		if (2 * x <= 100000 && visited[2 * x] == 0) {
+			q.push({ 2 * x, cnt + 1 });
+			path[2 * x] = x;
+			visited[x * 2] = 1;
 		}
-		if (x * 2 <= 100000 && visited[x * 2] != 1) {
-			temp.push_back(x * 2);
-			q.push({ { 2 * x, cnt + 1 },temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
-		}
+
 	}
 
-	cout << minnum << "\n";
-	for (auto it : answer) {
-		cout << it << " ";
+	for (int i = ans.size() - 1; i >= 0; i--) {
+		cout << ans[i] << " ";
 	}
-
 	return 0;
 }
-
-/*
-int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
-	cout.tie(0);
-	int n, k;
-	int minnum = 987654321;
-	queue<pair<pair<int, int>, vector<int>>> q;
-	vector<int> path;
-	vector<int> answer;
-	cin >> n >> k;
-	path.push_back(n);
-	q.push(make_pair(make_pair(n,0), path));
-
-
-	while (!q.empty()) {
-		int x = q.front().first.first;
-		int cnt = q.front().first.second;
-		vector<int> temp = q.front().second;
-		visited[x] = 1;
-		q.pop();
-
-
-		if (x == k && minnum > cnt) {
-			minnum = cnt;
-			answer = temp;
-			continue;
-		}
-
-		if (cnt > minnum)
-			continue;
-
-		if (x + 1 <= 100000 && visited[x + 1] != 1) {
-			temp.push_back(x + 1);
-			q.push({ { x + 1, cnt + 1 }, temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
-		}
-		if (x - 1 >= 0 && visited[x - 1] != 1) {
-			temp.push_back(x - 1);
-			q.push({ { x - 1,cnt + 1 }, temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
-		}
-		if (x * 2 <= 100000 && visited[x * 2] != 1) {
-			temp.push_back(x * 2);
-			q.push({ { 2 * x, cnt + 1 },temp });
-			auto aa = temp.end();
-			aa--;
-			temp.erase(aa);
-		}
-	}
-
-	cout << minnum << "\n";
-	for (auto it : answer) {
-		cout << it << " ";
-	}
-
-	return 0;
-}
-*/
